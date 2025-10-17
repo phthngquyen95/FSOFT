@@ -8,6 +8,7 @@ import { Check, Upload, X, Image as ImageIcon, Moon, Sun, Save } from 'lucide-re
 import { PREDEFINED_THEMES, getDarkThemes, getLightThemes } from '@/lib/themes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { localStorageWithEvents } from '@/lib/utils';
 
 interface BranchCustomizationProps {
   branch: any;
