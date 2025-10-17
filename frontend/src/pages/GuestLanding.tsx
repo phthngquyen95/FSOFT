@@ -121,6 +121,13 @@ const GuestLanding = () => {
 
     loadBranchData();
 
+    // Set initial flow state based on tableId
+    if (tableId) {
+      setFlowState('menu');
+    } else {
+      setFlowState('selection');
+    }
+
     // Listen for localStorage changes to reload branch data (both storage event and custom event)
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === 'mock_branches') {
