@@ -76,6 +76,8 @@ const GuestLanding = () => {
   const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
   const [orderType, setOrderType] = useState<'now' | 'booking'>('now');
   const [tableNumber, setTableNumber] = useState<string>('');
+  const [flowState, setFlowState] = useState<'selection' | 'menu' | 'reservation' | 'post-reservation'>('selection');
+  const [showMenuAfterReservation, setShowMenuAfterReservation] = useState(false);
 
   useEffect(() => {
     const loadBranchData = async () => {
