@@ -8,6 +8,7 @@ import {
   Menu,
   LogOut,
   Table2,
+  Home,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -118,6 +119,15 @@ export const WaiterSidebar = () => {
             <p className="text-xs text-muted-foreground truncate mt-0.5">{branchName}</p>
           </div>
         </div>
+        <Link to="/" className="block mb-3">
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+          >
+            <Home className="mr-3 h-4 w-4" />
+            Home
+          </Button>
+        </Link>
         <Button
           variant="outline"
           className="w-full justify-start"

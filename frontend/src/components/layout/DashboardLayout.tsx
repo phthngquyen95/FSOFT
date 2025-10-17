@@ -2,15 +2,16 @@ import { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/authStore';
-import { 
-  UtensilsCrossed, 
-  LogOut, 
+import {
+  UtensilsCrossed,
+  LogOut,
   User,
   LayoutDashboard,
   ChefHat,
   Store,
   Settings,
-  BarChart3
+  BarChart3,
+  Home
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -74,6 +75,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <p className="text-xs text-muted-foreground truncate">{user?.role || 'Role'}</p>
             </div>
           </div>
+          <Link to="/" className="block mb-3">
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+            >
+              <Home className="mr-3 h-4 w-4" />
+              Home
+            </Button>
+          </Link>
           <Button
             variant="outline"
             className="w-full justify-start"

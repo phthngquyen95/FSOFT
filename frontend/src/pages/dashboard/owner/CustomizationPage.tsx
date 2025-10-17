@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BranchCustomization } from '@/components/owner/BranchThemeEditor';
 import { BranchLandingCustomizer } from '@/components/owner/BranchLandingEditor';
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,8 @@ const CustomizationPage = () => {
   const brandBranches = allBranches.filter((b: any) => b.brandName === selectedBrand);
   const activeBranch = brandBranches[0] || null;
 
-  // Shared state for both components
-  const [themeData, setThemeData] = useState({
+  // Initialize with fresh data from localStorage
+  const getInitialThemeData = () => ({
     logoUrl: activeBranch?.logoUrl || '',
     bannerUrl: activeBranch?.bannerUrl || '',
     selectedThemeId: activeBranch?.selectedThemeId || 'midnight',
@@ -23,7 +23,7 @@ const CustomizationPage = () => {
     sliderImages: activeBranch?.sliderImages || [],
   });
 
-  const [landingData, setLandingData] = useState({
+  const getInitialLandingData = () => ({
     brandName: activeBranch?.brandName || '',
     description: activeBranch?.description || '',
     phone: activeBranch?.phone || '',
@@ -41,10 +41,22 @@ const CustomizationPage = () => {
     aboutSection2Image: activeBranch?.aboutSection2Image || '',
   });
 
+  // Shared state for both components
+  const [themeData, setThemeData] = useState(getInitialThemeData());
+  const [landingData, setLandingData] = useState(getInitialLandingData());
+
+  // Refresh data when activeBranch changes
+  useEffect(() => {
+    if (activeBranch) {
+      setThemeData(getInitialThemeData());
+      setLandingData(getInitialLandingData());
+    }
+  }, [activeBranch?.id]);
+
   const handleSaveAll = () => {
     const branches = JSON.parse(localStorage.getItem('mock_branches') || '[]');
     const theme = PREDEFINED_THEMES.find(t => t.id === themeData.selectedThemeId);
-    
+
     const updatedBranches = branches.map((b: any) =>
       b.id === activeBranch.id
         ? {

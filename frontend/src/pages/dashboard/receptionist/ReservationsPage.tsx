@@ -215,18 +215,18 @@ const ReservationsPage = () => {
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-      approved: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-      confirmed: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-      cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+      pending: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
+      approved: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100',
+      confirmed: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
+      cancelled: 'bg-destructive text-destructive-foreground',
     };
     return colors[status] || colors.pending;
   };
 
   const getTabColor = (isActive) => {
     return isActive 
-      ? 'bg-blue-600 text-white border-blue-600' 
-      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700';
+      ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
+      : 'bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground';
   };
 
   const BookingCard = ({ booking, index }) => {
@@ -313,7 +313,7 @@ const ReservationsPage = () => {
             <>
               <button
                 onClick={() => handleApprove(booking.id)}
-                className="flex-1 min-w-fit px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105"
+                className="flex-1 min-w-fit px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105"
               >
                 <Check className="h-4 w-4" />
                 <span>Approve</span>
@@ -333,7 +333,7 @@ const ReservationsPage = () => {
               <button
                 onClick={() => setShowTableSelector(booking.id)}
                 disabled={getAvailableTables(booking).length === 0}
-                className="flex-1 min-w-fit px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white disabled:text-gray-500 dark:disabled:text-gray-400 text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105 disabled:transform-none"
+                className="flex-1 min-w-fit px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white disabled:text-gray-500 dark:disabled:text-gray-400 text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-200 transform hover:scale-105 disabled:transform-none"
               >
                 <Check className="h-4 w-4" />
                 <span>Select Table</span>
@@ -405,7 +405,7 @@ const ReservationsPage = () => {
           </div>
           <button 
             onClick={() => setShowNewReservationModal(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
+            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-md flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
           >
             <Plus className="h-4 w-4" />
             New Reservation
@@ -420,7 +420,7 @@ const ReservationsPage = () => {
             placeholder="Search by guest name or phone number..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           />
         </div>
 
@@ -495,7 +495,7 @@ const ReservationsPage = () => {
                   value={newReservation.customer_name}
                   onChange={(e) => setNewReservation({ ...newReservation, customer_name: e.target.value })}
                   placeholder="Enter customer name"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
 
@@ -509,7 +509,7 @@ const ReservationsPage = () => {
                     value={newReservation.customer_phone}
                     onChange={(e) => setNewReservation({ ...newReservation, customer_phone: e.target.value })}
                     placeholder="Enter phone number"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
 
@@ -522,7 +522,7 @@ const ReservationsPage = () => {
                     value={newReservation.customer_email}
                     onChange={(e) => setNewReservation({ ...newReservation, customer_email: e.target.value })}
                     placeholder="Enter email address"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -538,7 +538,7 @@ const ReservationsPage = () => {
                     max="20"
                     value={newReservation.guest_number}
                     onChange={(e) => setNewReservation({ ...newReservation, guest_number: parseInt(e.target.value) || 1 })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
 
@@ -550,7 +550,7 @@ const ReservationsPage = () => {
                     type="datetime-local"
                     value={newReservation.start_time}
                     onChange={(e) => setNewReservation({ ...newReservation, start_time: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </div>
               </div>
@@ -564,7 +564,7 @@ const ReservationsPage = () => {
                   onChange={(e) => setNewReservation({ ...newReservation, note: e.target.value })}
                   placeholder="Any special requests or notes..."
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
                 />
               </div>
 
@@ -583,8 +583,8 @@ const ReservationsPage = () => {
                           onClick={() => setNewReservation({ ...newReservation, table_id: table.id === newReservation.table_id ? '' : table.id })}
                           className={`p-3 rounded-lg border-2 transition-all duration-200 transform hover:scale-105 ${
                             newReservation.table_id === table.id
-                              ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 shadow-md'
-                              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-400'
+                              ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20 shadow-md'
+                              : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-orange-400'
                           }`}
                         >
                           <div className="text-lg font-bold text-gray-900 dark:text-white">Table {table.number}</div>
@@ -608,7 +608,7 @@ const ReservationsPage = () => {
               </button>
               <button
                 onClick={handleCreateReservation}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md flex items-center gap-2 transition-all duration-200"
+                className="px-4 py-2 orange-600 hover:bg-orange-700 text-white font-medium rounded-md flex items-center gap-2 transition-all duration-200"
               >
                 <Calendar className="h-4 w-4" />
                 Create Reservation
@@ -666,7 +666,7 @@ const ReservationsPage = () => {
                               handleAssignTable(booking.id, table.id);
                               setShowTableSelector(null);
                             }}
-                            className="p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 transform hover:scale-105"
+                            className="p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 hover:border-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-200 transform hover:scale-105"
                           >
                             <div className="text-2xl font-bold text-gray-900 dark:text-white">Table {table.number}</div>
                             <div className="text-sm text-gray-600 dark:text-gray-400">{table.capacity} seats</div>

@@ -5,6 +5,7 @@ import "./index.css";
 import { useAuthStore } from "./store/authStore";
 import { initializeMockData } from './lib/mockDataInit';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ThemeProvider } from "./components/theme-provider.tsx";
 
 function AppWrapper() {
   const initialize = useAuthStore((state) => state.initialize);
@@ -20,8 +21,10 @@ function AppWrapper() {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ErrorBoundary>
-      <AppWrapper />
-    </ErrorBoundary>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <ErrorBoundary>
+        <AppWrapper />
+      </ErrorBoundary>
+    </ThemeProvider>
   </StrictMode>
 );

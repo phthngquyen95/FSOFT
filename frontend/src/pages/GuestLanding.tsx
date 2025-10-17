@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { OrderItem } from '@/store/orderStore';
-import { BookingItem } from '@/store/bookingStore';
+import { Booking } from '@/store/bookingStore';
 
 type MenuItemLite = {
   id: string;
@@ -73,7 +73,8 @@ const GuestLanding = () => {
   const [branch, setBranch] = useState<BranchLite | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItemLite[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedItems, setSelectedItems] = useState<OrderItem[]>([]);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [bookingItems, setBookingItems] = useState<Booking[]>([]);
   const [orderType, setOrderType] = useState<'now' | 'booking'>('now');
   const [tableNumber, setTableNumber] = useState<string>('');
 
@@ -84,7 +85,14 @@ const GuestLanding = () => {
         if (!shortCode) throw new Error('Branch code not provided');
 
         const branchResponse = await branchApi.getByShortCode(shortCode);
-        setBranch(branchResponse.data);
+        const branchData = branchResponse.data;
+
+        // Ensure we have all customization data
+        if (!branchData) {
+          throw new Error('Branch data not found');
+        }
+
+        setBranch(branchData);
 
         if (tableId) {
           const tables = JSON.parse(localStorage.getItem('mock_tables') || '[]') as Array<{ id: string; number: string }>;
@@ -121,17 +129,17 @@ const GuestLanding = () => {
   }, [shortCode, tableId]);
 
   const addToCart = (item: MenuItemLite) => {
-    const existingItem = selectedItems.find((i) => i.menuItemId === item.id);
+    const existingItem = orderItems.find((i) => i.menuItemId === item.id);
 
     if (existingItem) {
-      setSelectedItems(
-        selectedItems.map((i) =>
+      setOrderItems(
+        orderItems.map((i) =>
           i.menuItemId === item.id ? { ...i, quantity: i.quantity + 1 } : i
         )
       );
     } else {
-      setSelectedItems([
-        ...selectedItems,
+      setOrderItems([
+        ...orderItems,
         {
           id: `item_${Date.now()}_${Math.random()}`,
           menuItemId: item.id,
@@ -150,7 +158,7 @@ const GuestLanding = () => {
   };
 
   const updateQuantity = (menuItemId: string, delta: number) => {
-    setSelectedItems((items) =>
+    setOrderItems((items) =>
       items
         .map((item) =>
           item.menuItemId === menuItemId
@@ -162,10 +170,10 @@ const GuestLanding = () => {
   };
 
   const getItemQuantity = (menuItemId: string) => {
-    return selectedItems.find((i) => i.menuItemId === menuItemId)?.quantity || 0;
+    return orderItems.find((i) => i.menuItemId === menuItemId)?.quantity || 0;
   };
 
-  const totalItems = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = orderItems.reduce((sum, item) => sum + item.quantity, 0);
 
   if (loading) {
     return (
@@ -1158,16 +1166,16 @@ const GuestLanding = () => {
               <OrderDialog
                 branchId={branch.id}
                 branchName={branch.brandName || branch.name}
-                selectedItems={selectedItems}
-                onOrderComplete={() => setSelectedItems([])}
+                orderItems={orderItems}
+                onOrderComplete={() => setOrderItems([])}
               />
             </TabsContent>
             <TabsContent value="booking">
               <BookingDialog
                 branchId={branch.id}
                 branchName={branch.brandName || branch.name}
-                selectedItems={selectedItems as BookingItem[]}
-                onBookingComplete={() => setSelectedItems([])}
+                orderItems={bookingItems}
+                onBookingComplete={() => setOrderItems([])}
               />
             </TabsContent>
           </Tabs>

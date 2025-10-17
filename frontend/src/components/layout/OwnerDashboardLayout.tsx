@@ -2,9 +2,9 @@ import { ReactNode, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/authStore';
-import { 
-  UtensilsCrossed, 
-  LogOut, 
+import {
+  UtensilsCrossed,
+  LogOut,
   LayoutDashboard,
   Menu as MenuIcon,
   Table,
@@ -12,7 +12,8 @@ import {
   BarChart3,
   Palette,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Home
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -238,6 +239,15 @@ const OwnerDashboardLayout = ({ children }: OwnerDashboardLayoutProps) => {
             </div>
           </div>
           
+          <Link to="/" className="block mb-3">
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+            >
+              <Home className="mr-3 h-4 w-4" />
+              Home
+            </Button>
+          </Link>
           <Button
             variant="outline"
             className="w-full justify-start group hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-300 relative overflow-hidden"

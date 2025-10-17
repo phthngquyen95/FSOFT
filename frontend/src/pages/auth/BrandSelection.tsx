@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Building2, ArrowRight, Plus } from 'lucide-react';
+import { Building2, ArrowRight, ArrowLeft, Plus } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/store/authStore';
 import { seedBranchData } from '@/lib/mockDataInit';
@@ -88,6 +88,17 @@ const BrandSelection = () => {
   return (
     <div className="min-h-screen bg-muted/30 py-12 px-4">
       <div className="container max-w-5xl">
+        <div className="mb-6 flex justify-start">
+          <Button
+            type="button"
+            variant="ghost"
+            className="gap-2"
+            onClick={() => navigate('/')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Select Your Brand</h1>
           <p className="text-lg text-muted-foreground">

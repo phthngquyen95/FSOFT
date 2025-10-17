@@ -54,6 +54,7 @@ import ReceptionistTablesPage from './pages/dashboard/receptionist/TablesPage';
 import ReceptionistCommunicationsPage from './pages/dashboard/receptionist/CommunicationsPage';
 import ReceptionistBillingPage from './pages/dashboard/receptionist/BillingPage';
 import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 
 export const routes: RouteObject[] = [
   {
@@ -289,6 +290,14 @@ export const routes: RouteObject[] = [
   {
     path: '/restaurant-login',
     element: <RestaurantLoginPage />,
+  },
+  {
+    path: '/settings',
+    element: (
+      <ProtectedRoute>
+        <Settings />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '*',

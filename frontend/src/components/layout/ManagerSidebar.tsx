@@ -13,6 +13,7 @@ import {
   LogOut,
   Receipt,
   ChefHat,
+  Home,
 } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -192,6 +193,15 @@ export const ManagerSidebar = () => {
             )}
           </div>
         </div>
+        <Link to="/" className="block mb-3">
+          <Button
+            variant="outline"
+            className="w-full justify-start"
+          >
+            <Home className="mr-3 h-4 w-4" />
+            Home
+          </Button>
+        </Link>
         <Button
           variant="outline"
           className="w-full justify-start"

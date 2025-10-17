@@ -112,7 +112,18 @@ export const BranchLandingCustomizer = ({ branch, landingData: externalLandingDa
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                onClick={() => window.open(`/branch/${branch.shortCode}`, '_blank')}
+                onClick={() => {
+                  // Save data before opening preview
+                  const branches = JSON.parse(localStorage.getItem('mock_branches') || '[]');
+                  const updatedBranches = branches.map((b: any) =>
+                    b.id === branch.id ? { ...b, ...landingData } : b
+                  );
+                  localStorage.setItem('mock_branches', JSON.stringify(updatedBranches));
+
+                  // Open preview in new window with cache busting parameter
+                  const timestamp = Date.now();
+                  window.open(`/branch/${branch.shortCode}?t=${timestamp}`, '_blank');
+                }}
               >
                 <Eye className="mr-2 h-4 w-4" />
                 Preview

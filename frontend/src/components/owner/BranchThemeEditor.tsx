@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import { Check, Upload, X, Image as ImageIcon, Moon, Sun, Save } from 'lucide-react';
+import { Check, Upload, X, Image as ImageIcon, Moon, Sun, Save, Eye } from 'lucide-react';
 import { PREDEFINED_THEMES, getDarkThemes, getLightThemes } from '@/lib/themes';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,9 +33,6 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
   const themeData = externalThemeData || internalThemeData;
   const setThemeData = externalSetThemeData || setInternalThemeData;
 
-  const [avatarPreview, setAvatarPreview] = useState(branch.logoUrl || '');
-  const [bannerPreview, setBannerPreview] = useState(branch.bannerUrl || '');
-
   const handleThemeChange = (themeId: string) => {
     setThemeData({ ...themeData, selectedThemeId: themeId });
     const theme = PREDEFINED_THEMES.find(t => t.id === themeId);
@@ -48,13 +45,13 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
   const handleSave = () => {
     const branches = JSON.parse(localStorage.getItem('mock_branches') || '[]');
     const theme = PREDEFINED_THEMES.find(t => t.id === themeData.selectedThemeId);
-    
+
     const updatedBranches = branches.map((b: any) =>
       b.id === branch.id
         ? {
             ...b,
-            logoUrl: avatarPreview || themeData.logoUrl,
-            bannerUrl: bannerPreview || themeData.bannerUrl,
+            logoUrl: themeData.logoUrl,
+            bannerUrl: themeData.bannerUrl,
             selectedThemeId: themeData.selectedThemeId,
             themeColors: theme?.colors,
             layout: themeData.layout,
@@ -100,10 +97,8 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
     reader.onloadend = () => {
       const dataUrl = reader.result as string;
       if (type === 'avatar') {
-        setAvatarPreview(dataUrl);
         setThemeData({ ...themeData, logoUrl: dataUrl });
       } else if (type === 'banner') {
-        setBannerPreview(dataUrl);
         setThemeData({ ...themeData, bannerUrl: dataUrl });
       } else if (type === 'gallery') {
         setThemeData({ ...themeData, galleryImages: [...themeData.galleryImages, dataUrl] });
@@ -159,16 +154,37 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Branch Images</CardTitle>
-          <CardDescription>Customize your branch logo and banner image</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Branch Images</CardTitle>
+              <CardDescription>Customize your branch logo and banner image</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const branches = JSON.parse(localStorage.getItem('mock_branches') || '[]');
+                const updatedBranches = branches.map((b: any) =>
+                  b.id === branch.id ? { ...b, ...themeData } : b
+                );
+                localStorage.setItem('mock_branches', JSON.stringify(updatedBranches));
+
+                const timestamp = Date.now();
+                window.open(`/branch/${branch.shortCode}?t=${timestamp}`, '_blank');
+              }}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Preview
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-3">
               <Label>Restaurant Logo</Label>
               <div className="aspect-square rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/30 overflow-hidden">
-                {avatarPreview ? (
-                  <img src={avatarPreview} alt="Logo" className="w-full h-full object-cover" />
+                {themeData.logoUrl ? (
+                  <img src={themeData.logoUrl} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-center text-muted-foreground">
                     <ImageIcon className="h-12 w-12 mx-auto mb-2" />
@@ -187,8 +203,8 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
             <div className="space-y-3">
               <Label>Banner Image</Label>
               <div className="aspect-video rounded-lg border-2 border-dashed border-border flex items-center justify-center bg-muted/30 overflow-hidden">
-                {bannerPreview ? (
-                  <img src={bannerPreview} alt="Banner" className="w-full h-full object-cover" />
+                {themeData.bannerUrl ? (
+                  <img src={themeData.bannerUrl} alt="Banner" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-center text-muted-foreground">
                     <ImageIcon className="h-12 w-12 mx-auto mb-2" />
