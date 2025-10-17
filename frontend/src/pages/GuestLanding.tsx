@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { branchApi, menuApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, MapPin, Phone, Mail, Clock, Plus, Minus, Loader2 } from 'lucide-react';
+import { ShoppingCart, MapPin, Phone, Mail, Clock, Plus, Minus, Loader2, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { OrderDialog } from '@/components/OrderDialog';
 import { BookingDialog } from '@/components/BookingDialog';
