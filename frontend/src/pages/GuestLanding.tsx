@@ -7,6 +7,7 @@ import { ShoppingCart, MapPin, Phone, Mail, Clock, Plus, Minus, Loader2, Calenda
 import { toast } from '@/hooks/use-toast';
 import { OrderDialog } from '@/components/OrderDialog';
 import { BookingDialog } from '@/components/BookingDialog';
+import { ReservationBookingForm } from '@/components/ReservationBookingForm';
 import { motion } from 'framer-motion';
 import { getThemeById } from '@/lib/themes';
 import { Badge } from '@/components/ui/badge';
