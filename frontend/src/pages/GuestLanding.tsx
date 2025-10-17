@@ -118,6 +118,16 @@ const GuestLanding = () => {
     };
 
     loadBranchData();
+
+    // Listen for localStorage changes to reload branch data
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'mock_branches') {
+        loadBranchData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [shortCode, tableId]);
 
   const addToCart = (item: MenuItemLite) => {
