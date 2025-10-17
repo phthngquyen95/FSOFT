@@ -49,7 +49,7 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
   const handleSave = () => {
     const branches = JSON.parse(localStorage.getItem('mock_branches') || '[]');
     const theme = PREDEFINED_THEMES.find(t => t.id === themeData.selectedThemeId);
-    
+
     const updatedBranches = branches.map((b: any) =>
       b.id === branch.id
         ? {
@@ -64,7 +64,7 @@ export const BranchCustomization = ({ branch, themeData: externalThemeData, setT
           }
         : b
     );
-    localStorage.setItem('mock_branches', JSON.stringify(updatedBranches));
+    localStorageWithEvents.setItem('mock_branches', JSON.stringify(updatedBranches));
 
     toast({
       title: 'Customization Saved',
