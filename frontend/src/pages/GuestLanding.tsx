@@ -220,6 +220,105 @@ const GuestLanding = () => {
     );
   }
 
+  // Selection screen - shown when no tableId and user hasn't made a choice
+  if (flowState === 'selection' && !tableId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl w-full space-y-8"
+        >
+          {/* Logo and Header */}
+          <div className="text-center space-y-4">
+            {branch.logoUrl && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="flex justify-center"
+              >
+                <img
+                  src={branch.logoUrl}
+                  alt={branch.brandName}
+                  className="h-24 w-24 object-contain rounded-2xl shadow-lg"
+                />
+              </motion.div>
+            )}
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">{branch.brandName}</h1>
+              {branch.tagline && (
+                <p className="text-lg text-muted-foreground">{branch.tagline}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Selection Buttons */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <Button
+                size="lg"
+                className="w-full h-24 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                onClick={() => {
+                  setFlowState('menu');
+                  setOrderType('now');
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <ShoppingCart className="h-6 w-6" />
+                  <span>Order Now</span>
+                </div>
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full h-24 text-lg font-semibold border-2 shadow-lg hover:shadow-xl transition-all"
+                onClick={() => {
+                  setFlowState('reservation');
+                  setOrderType('booking');
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Calendar className="h-6 w-6" />
+                  <span>Reserve Table</span>
+                </div>
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Info Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <Card className="bg-muted/50 border-muted-foreground/20">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground text-center">
+                  {tableId
+                    ? '👉 You scanned a table QR code! Choose to order now or make a reservation.'
+                    : '👉 Choose how you\'d like to proceed'}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
+      </div>
+    );
+  }
+
   const menuCategories = [...new Set(menuItems.map((item) => item.category))];
 
   // Get theme configuration
