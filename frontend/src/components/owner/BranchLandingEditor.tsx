@@ -44,8 +44,8 @@ export const BranchLandingCustomizer = ({ branch, landingData: externalLandingDa
     const updatedBranches = branches.map((b: any) =>
       b.id === branch.id ? { ...b, ...landingData } : b
     );
-    localStorage.setItem('mock_branches', JSON.stringify(updatedBranches));
-    
+    localStorageWithEvents.setItem('mock_branches', JSON.stringify(updatedBranches));
+
     toast({
       title: 'Landing Page Updated',
       description: 'Your landing page content and theme have been updated.',
