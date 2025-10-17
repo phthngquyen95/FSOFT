@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Eye, Copy, Save } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { localStorageWithEvents } from '@/lib/utils';
 
 interface BranchLandingCustomizerProps {
   branch: any;
