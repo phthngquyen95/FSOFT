@@ -3,10 +3,11 @@ import { useParams } from 'react-router-dom';
 import { branchApi, menuApi } from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, MapPin, Phone, Mail, Clock, Plus, Minus, Loader2 } from 'lucide-react';
+import { ShoppingCart, MapPin, Phone, Mail, Clock, Plus, Minus, Loader2, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { OrderDialog } from '@/components/OrderDialog';
 import { BookingDialog } from '@/components/BookingDialog';
+import { ReservationBookingForm } from '@/components/ReservationBookingForm';
 import { motion } from 'framer-motion';
 import { getThemeById } from '@/lib/themes';
 import { Badge } from '@/components/ui/badge';
@@ -77,6 +78,8 @@ const GuestLanding = () => {
   const [bookingItems, setBookingItems] = useState<Booking[]>([]);
   const [orderType, setOrderType] = useState<'now' | 'booking'>('now');
   const [tableNumber, setTableNumber] = useState<string>('');
+  const [flowState, setFlowState] = useState<'selection' | 'menu' | 'reservation' | 'post-reservation'>('selection');
+  const [showMenuAfterReservation, setShowMenuAfterReservation] = useState(false);
 
   useEffect(() => {
     const loadBranchData = async () => {
@@ -126,6 +129,34 @@ const GuestLanding = () => {
     };
 
     loadBranchData();
+
+    // Set initial flow state based on tableId
+    if (tableId) {
+      setFlowState('menu');
+    } else {
+      setFlowState('selection');
+    }
+
+    // Listen for localStorage changes to reload branch data (both storage event and custom event)
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'mock_branches') {
+        loadBranchData();
+      }
+    };
+
+    const handleLocalStorageChanged = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail?.key === 'mock_branches') {
+        loadBranchData();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('localStorageChanged', handleLocalStorageChanged);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageChanged', handleLocalStorageChanged);
+    };
   }, [shortCode, tableId]);
 
   const addToCart = (item: MenuItemLite) => {
@@ -194,6 +225,105 @@ const GuestLanding = () => {
             </CardDescription>
           </CardHeader>
         </Card>
+      </div>
+    );
+  }
+
+  // Selection screen - shown when no tableId and user hasn't made a choice
+  if (flowState === 'selection' && !tableId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl w-full space-y-8"
+        >
+          {/* Logo and Header */}
+          <div className="text-center space-y-4">
+            {branch.logoUrl && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="flex justify-center"
+              >
+                <img
+                  src={branch.logoUrl}
+                  alt={branch.brandName}
+                  className="h-24 w-24 object-contain rounded-2xl shadow-lg"
+                />
+              </motion.div>
+            )}
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">{branch.brandName}</h1>
+              {branch.tagline && (
+                <p className="text-lg text-muted-foreground">{branch.tagline}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Selection Buttons */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <Button
+                size="lg"
+                className="w-full h-24 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
+                onClick={() => {
+                  setFlowState('menu');
+                  setOrderType('now');
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <ShoppingCart className="h-6 w-6" />
+                  <span>Order Now</span>
+                </div>
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full h-24 text-lg font-semibold border-2 shadow-lg hover:shadow-xl transition-all"
+                onClick={() => {
+                  setFlowState('reservation');
+                  setOrderType('booking');
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Calendar className="h-6 w-6" />
+                  <span>Reserve Table</span>
+                </div>
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Info Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <Card className="bg-muted/50 border-muted-foreground/20">
+              <CardContent className="pt-6">
+                <p className="text-sm text-muted-foreground text-center">
+                  {tableId
+                    ? '👉 You scanned a table QR code! Choose to order now or make a reservation.'
+                    : '👉 Choose how you\'d like to proceed'}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
       </div>
     );
   }
@@ -1146,6 +1276,108 @@ const GuestLanding = () => {
     }
   };
 
+  // Reservation screen - shown when user selects "Reserve Table"
+  if (flowState === 'reservation') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Button
+              variant="ghost"
+              className="mb-6"
+              onClick={() => setFlowState('selection')}
+            >
+              ← Back
+            </Button>
+            <h2 className="text-3xl font-bold mb-2">Reserve Your Table</h2>
+            <p className="text-muted-foreground">Fill in your details to complete your reservation</p>
+          </div>
+
+          {/* Reservation Form Card */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Booking Details</CardTitle>
+              <CardDescription>
+                Reserve a table at {branch.brandName}. We'll confirm your reservation shortly.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReservationBookingForm
+                branchId={branch.id}
+                branchName={branch.brandName || branch.name}
+                selectedItems={selectedItems as BookingItem[]}
+                onBookingComplete={() => {
+                  setFlowState('post-reservation');
+                  setShowMenuAfterReservation(true);
+                }}
+              />
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Post-reservation menu offer
+  if (flowState === 'post-reservation' && showMenuAfterReservation) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2">Reservation Confirmed!</h2>
+            <p className="text-muted-foreground mb-6">Would you like to add items to your reservation?</p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                size="lg"
+                className="flex-1"
+                onClick={() => setFlowState('menu')}
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Browse Menu
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  toast({
+                    title: 'Reservation Complete',
+                    description: 'Your table has been reserved. See you soon!',
+                  });
+                }}
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <Card className="bg-muted/50 border-muted-foreground/20">
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground text-center">
+                ℹ️ You can add items now or just visit us and order at your table.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="min-h-screen"
@@ -1154,8 +1386,30 @@ const GuestLanding = () => {
         ...themeStyles
       }}
     >
+      {/* Header with back button for menu state */}
+      {flowState === 'menu' && !tableId && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b py-4 px-4"
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <Button
+              variant="ghost"
+              onClick={() => setFlowState('selection')}
+              className="flex items-center gap-2"
+            >
+              ← Back
+            </Button>
+            <h2 className="text-lg font-semibold">{branch.brandName}</h2>
+            <div className="w-12" />
+          </div>
+        </motion.div>
+      )}
+
       {/* Floating Cart Button */}
-      {totalItems > 0 && (
+      {totalItems > 0 && flowState === 'menu' && (
         <div className="fixed bottom-6 right-6 z-50 w-[400px]">
           <Tabs value={orderType} onValueChange={(v) => setOrderType(v as 'now' | 'booking')} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-2">
@@ -1186,7 +1440,7 @@ const GuestLanding = () => {
       )}
 
       {/* Continuous Horizontal Slider */}
-      {sliderImages.length > 0 && (
+      {sliderImages.length > 0 && flowState === 'menu' && (
         <div className="overflow-hidden py-8 border-b" style={{ borderColor: themeColors ? `hsl(${themeColors.cardBorder})` : 'inherit' }}>
           <motion.div
             className="flex gap-4"
@@ -1219,7 +1473,7 @@ const GuestLanding = () => {
         </div>
       )}
 
-      {renderLayout()}
+      {flowState === 'menu' && renderLayout()}
     </div>
   );
 };
