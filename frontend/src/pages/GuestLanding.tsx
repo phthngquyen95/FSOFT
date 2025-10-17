@@ -1285,16 +1285,22 @@ const GuestLanding = () => {
               className="mb-6"
               onClick={() => setFlowState('selection')}
             >
-              ← Back to Menu
+              ← Back
             </Button>
             <h2 className="text-3xl font-bold mb-2">Reserve Your Table</h2>
             <p className="text-muted-foreground">Fill in your details to complete your reservation</p>
           </div>
 
-          {/* Reservation Dialog */}
-          <Card>
-            <CardContent className="pt-6">
-              <BookingDialog
+          {/* Reservation Form Card */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Booking Details</CardTitle>
+              <CardDescription>
+                Reserve a table at {branch.brandName}. We'll confirm your reservation shortly.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ReservationBookingForm
                 branchId={branch.id}
                 branchName={branch.brandName || branch.name}
                 selectedItems={selectedItems as BookingItem[]}
