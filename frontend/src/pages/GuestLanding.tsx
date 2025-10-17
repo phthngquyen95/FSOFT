@@ -1267,6 +1267,102 @@ const GuestLanding = () => {
     }
   };
 
+  // Reservation screen - shown when user selects "Reserve Table"
+  if (flowState === 'reservation') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Button
+              variant="ghost"
+              className="mb-6"
+              onClick={() => setFlowState('selection')}
+            >
+              ← Back to Menu
+            </Button>
+            <h2 className="text-3xl font-bold mb-2">Reserve Your Table</h2>
+            <p className="text-muted-foreground">Fill in your details to complete your reservation</p>
+          </div>
+
+          {/* Reservation Dialog */}
+          <Card>
+            <CardContent className="pt-6">
+              <BookingDialog
+                branchId={branch.id}
+                branchName={branch.brandName || branch.name}
+                selectedItems={selectedItems as BookingItem[]}
+                onBookingComplete={() => {
+                  setFlowState('post-reservation');
+                  setShowMenuAfterReservation(true);
+                }}
+              />
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Post-reservation menu offer
+  if (flowState === 'post-reservation' && showMenuAfterReservation) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background py-12 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-2xl mx-auto"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2">Reservation Confirmed!</h2>
+            <p className="text-muted-foreground mb-6">Would you like to add items to your reservation?</p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                size="lg"
+                className="flex-1"
+                onClick={() => setFlowState('menu')}
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                Browse Menu
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  toast({
+                    title: 'Reservation Complete',
+                    description: 'Your table has been reserved. See you soon!',
+                  });
+                }}
+              >
+                Continue
+              </Button>
+            </div>
+          </div>
+
+          {/* Info Card */}
+          <Card className="bg-muted/50 border-muted-foreground/20">
+            <CardContent className="pt-6">
+              <p className="text-sm text-muted-foreground text-center">
+                ℹ️ You can add items now or just visit us and order at your table.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="min-h-screen"
@@ -1275,8 +1371,30 @@ const GuestLanding = () => {
         ...themeStyles
       }}
     >
+      {/* Header with back button for menu state */}
+      {flowState === 'menu' && !tableId && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b py-4 px-4"
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <Button
+              variant="ghost"
+              onClick={() => setFlowState('selection')}
+              className="flex items-center gap-2"
+            >
+              ← Back
+            </Button>
+            <h2 className="text-lg font-semibold">{branch.brandName}</h2>
+            <div className="w-12" />
+          </div>
+        </motion.div>
+      )}
+
       {/* Floating Cart Button */}
-      {totalItems > 0 && (
+      {totalItems > 0 && flowState === 'menu' && (
         <div className="fixed bottom-6 right-6 z-50 w-[400px]">
           <Tabs value={orderType} onValueChange={(v) => setOrderType(v as 'now' | 'booking')} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-2">
@@ -1307,7 +1425,7 @@ const GuestLanding = () => {
       )}
 
       {/* Continuous Horizontal Slider */}
-      {sliderImages.length > 0 && (
+      {sliderImages.length > 0 && flowState === 'menu' && (
         <div className="overflow-hidden py-8 border-b" style={{ borderColor: themeColors ? `hsl(${themeColors.cardBorder})` : 'inherit' }}>
           <motion.div
             className="flex gap-4"
@@ -1340,7 +1458,7 @@ const GuestLanding = () => {
         </div>
       )}
 
-      {renderLayout()}
+      {flowState === 'menu' && renderLayout()}
     </div>
   );
 };
